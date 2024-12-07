@@ -1,7 +1,3 @@
-Here is an improved version of the README based on the provided text:
-
----
-
 # Obsidian Web Docs with R2
 
 Easily deploy your Obsidian notes as a website using Cloudflare Workers and R2, synchronized via the [**Remotely Sync**](https://github.com/sboesen/remotely-sync) plugin.
