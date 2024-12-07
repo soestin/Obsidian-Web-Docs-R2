@@ -15,9 +15,10 @@ Easily deploy your Obsidian notes as a website using Cloudflare Workers and R2, 
 ## Installation & Setup
 1. Clone this repository:
    ```bash
-   git clone https://github.com/soestin/Obsidian-Web-Docs-R2.git
+   git clone https://github.com/soestin/Obsidian-Web-Sync-R2.git
    ```
-2. Configure your Cloudflare Worker script to point to your R2 bucket.
+2. Configure the cloudflare worker to point to you obsidian bucket and root directory.
+   1. Go to [wranger.toml](wrangler.toml) and change: *pattern* and *ROOT_PATH* to your config.
 3. Deploy the Worker to serve your notes as a website.
 
 ## Usage
