@@ -13,9 +13,9 @@ export function generateHTML(title: string, content: string, metadata: Metadata,
 
   const navigationHtml = navigationInfo ? `
     <nav class="blog-navigation">
-      ${navigationInfo.prev ? `<a href="/${navigationInfo.prev.file}" class="nav-button prev-post">← Previous Post</a>` : '<span class="nav-button disabled">← Previous Post</span>'}
+      ${navigationInfo.next ? `<a href="/${navigationInfo.next.file}" class="nav-button next-post">← Next Post</a>` : '<span class="nav-button disabled">← Next Post</span>'}
       <a href="/" class="nav-button home">Home</a>
-      ${navigationInfo.next ? `<a href="/${navigationInfo.next.file}" class="nav-button next-post">Next Post →</a>` : '<span class="nav-button disabled">Next Post →</span>'}
+      ${navigationInfo.prev ? `<a href="/${navigationInfo.prev.file}" class="nav-button prev-post">Previous Post →</a>` : '<span class="nav-button disabled">Previous Post →</span>'}
     </nav>
   ` : '';
 
@@ -259,10 +259,11 @@ export function generateHTML(title: string, content: string, metadata: Metadata,
         }
 
         .nav-button {
-          padding: 10px 15px;
+          padding: 5px 10px; /* Minder padding voor kleinere knoppen */
+          font-size: 0.9em; /* Kleiner lettertype */
           background-color: var(--links);
           color: var(--background);
-          border-radius: 5px;
+          border-radius: 3px; /* Kleinere afgeronde hoeken */
           transition: background-color 0.3s ease;
         }
 

@@ -13,9 +13,10 @@ import { generateHTML } from "./template";
 import { parseMetadata, parseDate, BlogPost, Metadata } from "./utils";
 
 async function listFiles(env: Env): Promise<BlogPost[]> {
-  const files = await env.OBSIDIAN_BUCKET.list({ prefix: 'webblog/' });
+  const rootPath = env.ROOT_PATH; // Haal de waarde van ROOT_PATH op
+  const files = await env.OBSIDIAN_BUCKET.list({ prefix: `${rootPath}/` });
   const markdownFiles = files.objects.filter(obj => obj.key.endsWith('.md'));
-  
+
   const blogPosts: BlogPost[] = await Promise.all(
     markdownFiles.map(async (obj) => {
       const file = await env.OBSIDIAN_BUCKET.get(obj.key);
@@ -23,34 +24,35 @@ async function listFiles(env: Env): Promise<BlogPost[]> {
         const content = await file.text();
         const [metadata, _] = parseMetadata(content);
         return {
-          file: obj.key.replace('webblog/', '').replace('.md', ''),
+          file: obj.key.replace(`${rootPath}/`, '').replace('.md', ''),
           metadata
         };
       }
       return {
-        file: obj.key.replace('webblog/', '').replace('.md', ''),
+        file: obj.key.replace(`${rootPath}/`, '').replace('.md', ''),
         metadata: {}
       };
     })
   );
 
-  // Sort the files based on creation_date
+  // Sorteer bestanden op basis van creation_date
   return blogPosts.sort((a, b) => {
     const dateA = a.metadata.creation_date ? parseDate(a.metadata.creation_date) : new Date(0);
     const dateB = b.metadata.creation_date ? parseDate(b.metadata.creation_date) : new Date(0);
-    return dateB.getTime() - dateA.getTime(); // Latest first
+    return dateB.getTime() - dateA.getTime(); // Nieuwste eerst
   });
 }
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
+    const rootPath = env.ROOT_PATH; // Haal de waarde van ROOT_PATH op
     const url = new URL(request.url);
     let path = decodeURIComponent(url.pathname.replace(/^\/+/, ""));
     const isFileSelected = path !== "";
     if (isFileSelected && !path.endsWith(".md")) {
       path += ".md";
     }
-    const objectPath = isFileSelected ? `webblog/${path}` : "";
+    const objectPath = isFileSelected ? `${rootPath}/${path}` : "";
 
     let contentHtml = "";
     let title = "Blog";
@@ -83,7 +85,7 @@ export default {
         contentHtml = processedContent.toString();
         title = metadata.header || path.replace(".md", "");
 
-        // Find the current post index
+        // Vind de huidige postindex
         const currentIndex = blogPosts.findIndex(post => post.file === path.replace(".md", ""));
         if (currentIndex !== -1) {
           navigationInfo = {
@@ -95,7 +97,7 @@ export default {
         contentHtml = "<p>File not found</p>";
       }
     } else {
-      // Generate homepage with file listings
+      // Genereer homepage met bestandslijsten
       const fileBlocks = blogPosts.map(({ file, metadata }) => `
         <div class="file-block">
           <a href="/${file}">
@@ -127,5 +129,5 @@ export default {
 
 interface Env {
   OBSIDIAN_BUCKET: R2Bucket;
+  ROOT_PATH: string; // Voeg ROOT_PATH toe aan de Env-interface
 }
-

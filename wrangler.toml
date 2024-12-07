@@ -14,5 +14,10 @@ bucket_name = "obsidian"
 preview_bucket_name = "obsidian"
 
 [[routes]]
-pattern = "obsidi.soestin.nl"
+pattern = "blog.soestin.nl"
 custom_domain = true
+
+
+[vars]
+ROOT_PATH = "webblog" 
+
